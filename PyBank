@@ -1,0 +1,98 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# ## Budget question (Pybank)
+
+# In[24]:
+
+
+#Get the directory and import 
+import os
+current_directory = os.getcwd()
+print(current_directory)
+# I made sure my dataset was stored at the same place 
+
+
+# In[86]:
+
+
+# Calcultate the average 
+def calculate_average(numbers):
+    total = sum(numbers)
+    average = total / len(numbers)
+    return average
+
+# Read the file and manipulate the data 
+budget_path = "budget_data.csv"
+
+with open(budget_path, 'r') as file:
+    csv_reader = csv.reader(file, delimiter=',')
+    next(csv_reader)  # Skip the header row
+
+    # Name my variables (as per the model)
+    total_months = 0
+    net_profit_losses = 0
+    monthly_changes = []
+    greatest_increase = 0
+    greatest_decrease = 0
+    greatest_increase_month = ""
+    greatest_decrease_month = ""
+
+    # For loops to go trough each row of the data set and make the calculation (for loops)
+    for row in csv_reader:
+        date = row[0]
+        profit_losses = int(row[1])
+
+        # Profit and losses 
+        total_months += 1
+        net_profit_losses += profit_losses
+
+        # Each month_changes (if statement)
+        if total_months > 1:
+            change = profit_losses - previous_profit_losses
+            monthly_changes.append(change)
+
+            # Check for greatest increase and decrease (if statement)
+            if change > greatest_increase:
+                greatest_increase = change
+                greatest_increase_month = date
+            elif change < greatest_decrease:
+                greatest_decrease = change
+                greatest_decrease_month = date
+
+        # Make sure calculation goes down 
+        previous_profit_losses = profit_losses
+
+    # average_change
+    average_change = calculate_average(monthly_changes)
+
+
+# In[84]:
+
+
+# Print the analysis to the terminal
+print("Financial Analysis")
+print("----------------------------")
+print(f"Total Months: {total_months}")
+print(f"Total: ${net_profit_losses}")
+print(f"Average Change: ${average_change:.2f}")
+print(f"Greatest Increase in Profits: {greatest_increase_month} (${greatest_increase})")
+print(f"Greatest Decrease in Profits: {greatest_decrease_month} (${greatest_decrease})")
+
+
+# In[85]:
+
+
+# Export the analysis to a text file
+output_file = "financial_analysis.txt"
+
+with open(output_file, 'w') as file:
+    file.write("Financial Analysis\n")
+    file.write("----------------------------\n")
+    file.write(f"Total Months: {total_months}\n")
+    file.write(f"Total: ${net_profit_losses}\n")
+    file.write(f"Average Change: ${average_change:.2f}\n")
+    file.write(f"Greatest Increase in Profits: {greatest_increase_month} (${greatest_increase})\n")
+    file.write(f"Greatest Decrease in Profits: {greatest_decrease_month} (${greatest_decrease})\n")
+
+print("Analysis has been exported to financial_analysis.txt")
