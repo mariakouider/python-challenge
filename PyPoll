@@ -1,0 +1,99 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# ## Election question (PyPoll)
+
+# In[1]:
+
+
+#Get the directory and import 
+import os
+current_directory = os.getcwd()
+print(current_directory)
+
+
+# In[2]:
+
+
+# Read the CSV file
+import csv
+election_path = "election_data.csv"
+# I have put my file in the same directory 
+
+
+# In[3]:
+
+
+# Name the variables that I need (as per the model)
+total_votes = 0
+candidates = {}
+winner = ""
+winner_votes = 0
+
+
+# In[11]:
+
+
+# File manipulation
+with open(election_path, newline="") as csvfile:
+    csvreader = csv.reader(csvfile, delimiter=",")
+    next(csvreader)  # Skip the header row
+    
+      # Iterate over each row (for loops)
+    for row in csvreader:
+        total_votes += 1
+        candidate = row[2]
+        
+        if candidate not in candidates:
+            candidates[candidate] = 1
+        else:
+            candidates[candidate] += 1
+
+
+# In[9]:
+
+
+# Calculate the percentage of vote for each candidate, from the each rows 
+for candidate, votes in candidates.items():
+    percentage = (votes / total_votes) * 100
+    print(f"{candidate}: {percentage:.3f}% ({votes})")
+    
+    # The one that has the most amount of vote is the winner 
+    if votes > winner_votes:
+        winner = candidate
+        winner_votes = votes
+
+
+# In[10]:
+
+
+# Print the election results with the winner at the end (as per the model)
+print("Election Results")
+print("-------------------------")
+print(f"Total Votes: {total_votes}")
+print("-------------------------")
+for candidate, votes in candidates.items():
+    percentage = (votes / total_votes) * 100
+    print(f"{candidate}: {percentage:.3f}% ({votes})")
+print("-------------------------")
+print("Winner:", winner)
+print("-------------------------")
+
+
+# In[12]:
+
+
+# Export to a text file
+with open("election_results.txt", "w") as file:
+    file.write("Election Results\n")
+    file.write("-------------------------\n")
+    file.write(f"Total Votes: {total_votes}\n")
+    file.write("-------------------------\n")
+    for candidate, votes in candidates.items():
+        percentage = (votes / total_votes) * 100
+        file.write(f"{candidate}: {percentage:.3f}% ({votes})\n")
+    file.write("-------------------------\n")
+    file.write(f"Winner: {winner}\n")
+    file.write("-------------------------\n")
+
+print("Results exported to 'election_results.txt' file.")
